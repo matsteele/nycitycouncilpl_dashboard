@@ -1,13 +1,23 @@
 import React, { useEffect, createRef, useState } from 'react';
 import { Map as LeafletMap, GeoJSON, ImageOverlay } from 'react-leaflet';
 import CouncilDistricts from './data/council_districts.json';
-
 import logo from './logo.png';
+
+console.log('CouncilDistricts', CouncilDistricts)
+
 
 export default function Map(props) {
   const mapRef = createRef();
 
   const [seatImg, setseatImg] = useState(false);
+
+
+  useEffect(() => {
+    
+    const seat2show = props.seatClicked? props.seatClicked : props.seatHovered
+    const newHS = `/images/headshots/${seat2show}.jpg`
+    setseatImg(newHS)
+  }, [props.seatClicked, props.seatHovered])
 
   const onClick = (e) => {
     if (
@@ -21,7 +31,7 @@ export default function Map(props) {
   };
 
   return (
-    <>
+    <section >
       <img
         style={{
           display: 'block',
@@ -29,7 +39,7 @@ export default function Map(props) {
           zIndex: 10,
           left: props.chartBuffer,
         }}
-        src={logo}
+        src={seatImg}
       ></img>
       <LeafletMap
         center={[40.713685, -73.974095]}
@@ -85,6 +95,6 @@ export default function Map(props) {
           }}
         />
       </LeafletMap>
-    </>
+    </section>
   );
 }
