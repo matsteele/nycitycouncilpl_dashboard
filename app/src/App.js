@@ -6,8 +6,8 @@ import TopChart from './top_chart'
 const colors = {
   greygreen: '#b6cac0',
   darkgrey:'#434A46',
-  emphasis: '#7ED2A8',
-  dark: '#2C4A3B',
+  light: '#7ED2A8',
+  emphasis: '#2C4A3B',
   basic: '#87968F',
 };
 
@@ -33,6 +33,8 @@ const App = () => {
         chartHeight={chartHeight}
         seatHovered={seatHovered}
         seatClicked={seatClicked}
+        setseatHovered={setseatHovered}
+        setseatClicked={setseatClicked}
         chartBuffer={chartBuffer}
       />
       <Map
