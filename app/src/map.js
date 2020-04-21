@@ -7,94 +7,101 @@ console.log('CouncilDistricts', CouncilDistricts)
 
 
 export default function Map(props) {
-  const mapRef = createRef();
+    const mapRef = createRef();
 
-  const [seatImg, setseatImg] = useState(false);
+    const [seatImg, setseatImg] = useState(false);
 
 
-  useEffect(() => {
-    
-    const seat2show = props.seatClicked? props.seatClicked : props.seatHovered
-    const newHS = `/images/headshots/${seat2show}.jpg`
-    setseatImg(newHS)
-  }, [props.seatClicked, props.seatHovered])
+    useEffect(() => {
+        const seat2show = props.seatClicked ? props.seatClicked : props.seatHovered
 
-  const onClick = (e) => {
-    if (
-      !e.layer.feature.properties.coun_dist ||
-      e.layer.feature.properties.coun_dist === props.seatClicked
-    ) {
-      props.setseatClicked(false);
-    } else {
-      props.setseatClicked(e.layer.feature.properties.coun_dist);
-    }
-  };
+        const newHS = seat2show? `/images/headshots/${seat2show}.jpg` : false
+        setseatImg(newHS)
+        return () => {
+            setseatImg(false)
+        }
+    }, [props.seatClicked, props.seatHovered])
 
-  return (
-    <section >
-      <img
-        style={{
-          display: 'block',
-          position: 'absolute',
-          zIndex: 10,
-          left: props.chartBuffer,
-        }}
-        src={seatImg}
-      ></img>
-      <LeafletMap
-        center={[40.713685, -73.974095]}
-        zoom={11}
-        maxZoom={20}
-        attributionControl={true}
-        zoomControl={true}
-        doubleClickZoom={true}
-        scrollWheelZoom={true}
-        dragging={true}
-        animate={true}
-        easeLinearity={0.35}
-      >
-        <GeoJSON
-          onMouseIn={(e) => {
-            if (!props.seatClicked)
-              props.setseatHovered(e.layer.feature.properties.coun_dist);
-          }}
-          onMouseOut={(e) => {
-            if (!props.seatClicked) props.setseatHovered(false);
-          }}
-          onMouseOver={(e) => {
-            if (!props.seatClicked)
-              props.setseatHovered(e.layer.feature.properties.coun_dist);
-          }}
-          onClick={onClick}
-          ref={mapRef}
-          data={CouncilDistricts}
-          style={function (geoJsonFeature) {
-            return {
-              color:
-                props.seatClicked == geoJsonFeature.properties.coun_dist
-                  ? props.colors.emphasis
-                  : 'white',
-              weight:
-                props.seatClicked == geoJsonFeature.properties.coun_dist
-                  ? 4
-                  : 0.5,
-              fillColor: props.seatClicked
-                ? props.seatClicked == geoJsonFeature.properties.coun_dist
-                  ? props.colors.emphasis
-                  : props.colors.greygreen
-                : props.seatHovered == geoJsonFeature.properties.coun_dist
-                ? props.colors.emphasis
-                : props.colors.greygreen,
+    const onClick = (e) => {
+        if (
+            !e.layer.feature.properties.coun_dist ||
+            e.layer.feature.properties.coun_dist === props.seatClicked
+        ) {
+            props.setseatClicked(false);
+        } else {
+            props.setseatClicked(e.layer.feature.properties.coun_dist);
+        }
+    };
 
-              fillOpacity: props.seatClicked
-                ? props.seatClicked == geoJsonFeature.properties.coun_dist
-                  ? 1
-                  : 0.5
-                : 1,
-            };
-          }}
-        />
-      </LeafletMap>
-    </section>
-  );
+    return (
+        <section >
+            {seatImg ? <img
+                style={{
+                    display: 'block',
+                    position: 'absolute',
+                    zIndex: 10,
+                    left: props.chartBuffer,
+                }}
+                src={seatImg}
+            ></img>
+                : ''
+
+            }
+
+            <LeafletMap
+                center={[40.713685, -73.974095]}
+                zoom={11}
+                maxZoom={20}
+                attributionControl={true}
+                zoomControl={true}
+                doubleClickZoom={true}
+                scrollWheelZoom={true}
+                dragging={true}
+                animate={true}
+                easeLinearity={0.35}
+            >
+                <GeoJSON
+                    onMouseIn={(e) => {
+                        if (!props.seatClicked)
+                            props.setseatHovered(e.layer.feature.properties.coun_dist);
+                    }}
+                    onMouseOut={(e) => {
+                        if (!props.seatClicked) props.setseatHovered(false);
+                    }}
+                    onMouseOver={(e) => {
+                        if (!props.seatClicked)
+                            props.setseatHovered(e.layer.feature.properties.coun_dist);
+                    }}
+                    onClick={onClick}
+                    ref={mapRef}
+                    data={CouncilDistricts}
+                    style={function (geoJsonFeature) {
+                        return {
+                            color:
+                                props.seatClicked == geoJsonFeature.properties.coun_dist
+                                    ? props.colors.emphasis
+                                    : 'white',
+                            weight:
+                                props.seatClicked == geoJsonFeature.properties.coun_dist
+                                    ? 4
+                                    : 0.5,
+                            fillColor: props.seatClicked
+                                ? props.seatClicked == geoJsonFeature.properties.coun_dist
+                                    ? props.colors.emphasis
+                                    : props.colors.greygreen
+                                : props.seatHovered == geoJsonFeature.properties.coun_dist
+                                    ? props.colors.emphasis
+                                    : props.colors.greygreen,
+
+                            fillOpacity: props.seatClicked
+                                ? props.seatClicked == geoJsonFeature.properties.coun_dist
+                                    ? 1
+                                    : 0.5
+                                : 1,
+                        };
+                    }}
+                />
+            </LeafletMap>
+        </section>
+    );
 }
